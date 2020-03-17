@@ -12,8 +12,7 @@ const mapsStatetoProps = (state,ownProps)=>{
   
   if(eventId && event.length > 0 ){
     event = event.filter(event => event.id == eventId)[0]
-    console.log(event);
-    
+    console.log(event);  
   }
 
   return {

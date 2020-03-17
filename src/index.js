@@ -7,7 +7,7 @@ import App from './app/layout/App';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { configure } from './store/configure';
-import {} from 'redux-devtools'
+import { createDevTools } from 'redux-devtools'
 
 const store=configure()
 

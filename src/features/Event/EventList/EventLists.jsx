@@ -23,7 +23,7 @@ class EventLists extends Component {
                 </Segment>
                     <Segment>Date:{list.date}</Segment>
                 <Segment>Subscribers</Segment>
-                <Segment>{list.description}<Button floated='right' key={list.Name} primary as={NavLink} to={`/detailpage/${list.id}`}>Adios Ameigo</Button></Segment>      
+                <Segment>{list.description}<Button floated='right' primary as={NavLink} to={`/detailpage/${list.id}`}>Adios Ameigo</Button></Segment>      
             </Segment.Group>
         )
     }
