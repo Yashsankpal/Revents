@@ -5,6 +5,7 @@ import { NavLink } from 'react-router-dom'
 function EventHeading({event}) {
     return (
         <Segment.Group size='tiny'>
+            <header as='h4' fluid textAlign='center' >lorem epsum</header>
             <Image src={event.Profile_image}fluid size='massive'/>
             <Segment >
                 <Button content='JOIN THIS EVENT' color='teal' size='large'/>

@@ -15,7 +15,7 @@ class EventLists extends Component {
                         <Item>
                             <Item.Image src={list.Profile_image} size='tiny' circular floated='left'/>
                             <Item.Content>
-                                <Item.Header>Header</Item.Header>
+        <Item.Header>{list.event}</Item.Header>
                                     <Item.Description> Hosted by {list.Name} </Item.Description>
                             </Item.Content>
                         </Item>

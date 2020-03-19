@@ -3,6 +3,7 @@ import { CREATE_EVENT, UPDATE_EVENT, DELETE_EVENT } from "./constant"
 const events= [
   {       
     id: 0,
+    event:'lorem epsum',
     Name: 'Donna Bednar',
     Profile_image: 'https://s3.amazonaws.com/uifaces/faces/twitter/picard102/128.jpg',
     date: '2020-06-27',
@@ -11,6 +12,7 @@ const events= [
   },
   {
     id: 1,
+    event:'lorem epsum',
     Name: 'Celia Ritchie',
     Profile_image: 'https://s3.amazonaws.com/uifaces/faces/twitter/gonzalorobaina/128.jpg',
     date: '2021-02-03',
@@ -19,6 +21,7 @@ const events= [
   },
   {
     id: 2,
+    event:'lorem epsum',
     Name: 'Lambert Breitenberg',
     Profile_image: 'https://s3.amazonaws.com/uifaces/faces/twitter/vikashpathak18/128.jpg',
     date: '2020-06-16',
@@ -33,9 +36,9 @@ export const reducer = (state = events,payload) => {
     case CREATE_EVENT:
       return [...state,payload.payload.event]   
     case UPDATE_EVENT:
-      return [...state.filter(event=>event.id !== payload.payload.event.id)]
-    case DELETE_EVENT:
       return [...state.filter(event=>event.id !== payload.payload.event.id),payload.payload.event]
+      case DELETE_EVENT:
+        return [...state.filter(event=>event.id !== payload.payload.event.id)]
     default:
             return state
     } 
