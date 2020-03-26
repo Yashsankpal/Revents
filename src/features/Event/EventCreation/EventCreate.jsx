@@ -74,7 +74,7 @@ class EventCreate extends Component {
 
     /*<Form.Select options={options} placeholder='What is your event about?'/>*/
     render() {
-        const {event,description} = this.props
+        const {initialValues,invalid,submitting,pristine} = this.props
         return (
             <Segment>
             <Form onSubmit={this.props.handleSubmit(this.toSubmit)}>              
@@ -83,8 +83,9 @@ class EventCreate extends Component {
                 <Field type='text' options={options} component={SelectInput} name='category' placeholder='Category' multiple={false}/>
                 <Field type='text'  component={TextArea} name='description' placeholder='Describe'/>
                 <h4>Event Location Details</h4>
+                <Field name='date' component={DateArea} placeholder='Event Date' dateFormat='dd LLL yyyy h:mm a' showTimeSelect timeFormat='HH:mm'/>
                 <Form.Group>
-                    <Form.Button primary type='submit'>Submit</Form.Button>
+                    <Form.Button primary disabled={invalid || submitting || pristine} type='submit'>Submit</Form.Button>
                     <Form.Button secondary>Cancel</Form.Button>
                 </Form.Group>
             </Form>
