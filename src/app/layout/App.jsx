@@ -26,7 +26,7 @@ class App extends Component {
           <Navbar className='navbar-bg'></Navbar>
           <Container className="main">
             <Route path='/events' component={EventDashboard}/>
-            <Route path='/eventCreation' component={EventCreate}/>
+            <Route path={['/eventCreation','/manage/:id']} component={EventCreate}/>
             <Route path='/people' component={Userdashboard}/>
             <Route path='/events/:id' component={EventDetailed}/>
             <Route path='/profile/:id' components={UserDetailed}/>

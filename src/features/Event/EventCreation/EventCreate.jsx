@@ -11,29 +11,23 @@ import TextArea from '../../../app/common/TextArea';
 import TextInput from '../../../app/common/TextInput';
 import DateArea from '../../../app/common/DateArea';
 import SelectInput from '../../../app/common/SelectInput';
+import { combineValidators, isRequired, composeValidators, hasLengthGreaterThan } from 'revalidate';
 
 
-function mapsStatetoProps(state,ownProps){
+const mapsStatetoProps = (state,ownProps) => {
     const eventId = ownProps.match.params.id
-    let temp= {
-    id:null,
-    event:'',
-    Name: '',
-    Profile_image: '',
-    date: '',
-    address: '',
-    description:''
-}
-
+    let temp= {id:'',description:'',event:'',Name:'',category:''}
+    let event= state.event
     
-    if(eventId){
-console.log('hello');
-
-        temp = state.event.filter(event => event.id === eventId)[0]
-        console.log(temp);
-    }      
+    if(eventId && event.length > 0 ){
+      event = event.filter(event => event.id == eventId)[0]
+      temp = event
+      console.log(temp);  
+    }
+  
    return {
        eventId,
+       initialValues:temp,
        temp
     }
 };
@@ -52,11 +46,16 @@ const actions = {
     deleteEvent,
     updateEvent
 }
-
+const validate = combineValidators({
+    event: isRequired({message:'Requires title'}),
+    category: isRequired({message:' Rcategory'}),
+    description: composeValidators(
+        isRequired({message: 'Required description'}),
+        hasLengthGreaterThan(4)({message:'length should be greater than 3'})
+    )(),
+})
 class EventCreate extends Component {
     toSubmit=async values=>{
-        console.log(this.props.eventId)
-        console.log(values);
         if(values.id){
             console.log(values);
             this.props.updateEvent(values)
@@ -75,15 +74,13 @@ class EventCreate extends Component {
 
     /*<Form.Select options={options} placeholder='What is your event about?'/>*/
     render() {
-        const {eventId} = this.props
+        const {event,description} = this.props
         return (
             <Segment>
-                <h1>{this.props.eventId}</h1>
-                <h2>{this.props.temp}</h2>
             <Form onSubmit={this.props.handleSubmit(this.toSubmit)}>              
                 <h4>Event Details</h4>
                 <Field type='text' component={TextInput} name='event' placeholder='Enter the title'/>
-                <Field type='text' options={options} component={SelectInput} name='category' placeholder='Category' multiple={true}/>
+                <Field type='text' options={options} component={SelectInput} name='category' placeholder='Category' multiple={false}/>
                 <Field type='text'  component={TextArea} name='description' placeholder='Describe'/>
                 <h4>Event Location Details</h4>
                 <Form.Group>
@@ -96,7 +93,7 @@ class EventCreate extends Component {
     }
 }
 
-export default connect(mapsStatetoProps,actions)(reduxForm({form:'eventCreate'})(EventCreate));
+export default connect(mapsStatetoProps,actions)(reduxForm({form:'eventCreate',validate})(EventCreate));
 /*
 if(eventId && event.length > 0 ){
     event = event.filter(event => event.id == eventId)[0]
