@@ -1,5 +1,6 @@
 /*jshint esversion:6*/
 /*jshint ignore:start*/
+/* global google*/
 import React, { Component } from 'react'
 import { Form , Input, Segment } from 'semantic-ui-react';
 import {reduxForm , Field} from 'redux-form'
@@ -12,11 +13,13 @@ import TextInput from '../../../app/common/TextInput';
 import DateArea from '../../../app/common/DateArea';
 import SelectInput from '../../../app/common/SelectInput';
 import { combineValidators, isRequired, composeValidators, hasLengthGreaterThan } from 'revalidate';
+import TestPlacesInput from '../../../app/common/TestPlacesInput';
+import { geocodeByAddress, getLatLng } from 'react-places-autocomplete';
 
 
 const mapsStatetoProps = (state,ownProps) => {
     const eventId = ownProps.match.params.id
-    let temp= {id:'',description:'',event:'',Name:'',category:''}
+    let temp= {id:'',description:'',event:'',Name:'',category:'',city:'',Venue:''}
     let event= state.event
     
     if(eventId && event.length > 0 ){
@@ -53,9 +56,18 @@ const validate = combineValidators({
         isRequired({message: 'Required description'}),
         hasLengthGreaterThan(4)({message:'length should be greater than 3'})
     )(),
+    date:isRequired({message:'Requires Date'}),
+    city:isRequired({message:'Requires City Name'}),
+    Venue:isRequired({message:'Requires Venue Address'}),
+
 })
 class EventCreate extends Component {
+    state = {
+        cityLatLng:{},
+        venueLatLng:{},
+    }
     toSubmit=async values=>{
+        values.venueLatLng = this.state.venueLatLng
         if(values.id){
             console.log(values);
             this.props.updateEvent(values)
@@ -70,7 +82,35 @@ class EventCreate extends Component {
         }
     }
     
-    
+    handleCitySelect = selectedCity =>{
+        geocodeByAddress(selectedCity)
+            .then(results => getLatLng(results[0]))
+            .then(LatLng => {
+                this.setState(
+                    {
+                        cityLatLng: LatLng
+                    }
+                )
+            })
+            .then(() => {
+                this.props.change('city',selectedCity)
+            })
+    }
+
+    handleVenueSelect = selectedVenue =>{
+        geocodeByAddress(selectedVenue)
+            .then(results => getLatLng(results[0]))
+            .then(LatLng => {
+                this.setState(
+                    {
+                        cityLatLng: LatLng
+                    }
+                )
+            })
+            .then(() => {
+                this.props.change('city',selectedVenue)
+            })
+    }
 
     /*<Form.Select options={options} placeholder='What is your event about?'/>*/
     render() {
@@ -79,15 +119,65 @@ class EventCreate extends Component {
             <Segment>
             <Form onSubmit={this.props.handleSubmit(this.toSubmit)}>              
                 <h4>Event Details</h4>
-                <Field type='text' component={TextInput} name='event' placeholder='Enter the title'/>
-                <Field type='text' options={options} component={SelectInput} name='category' placeholder='Category' multiple={false}/>
-                <Field type='text'  component={TextArea} name='description' placeholder='Describe'/>
+                <Field
+                type='text'
+                component={TextInput} 
+                name='event' 
+                placeholder='Enter the title'
+                />
+
+                <Field
+                type='text' 
+                options={options} 
+                component={SelectInput} 
+                name='category' 
+                placeholder='Category' 
+                multiple={false}
+                />
+
+                <Field 
+                type='text'  
+                component={TextArea} 
+                name='description' 
+                placeholder='Describe'
+                />
+
                 <h4>Event Location Details</h4>
-                <Field name='date' component={DateArea} placeholder='Event Date' dateFormat='dd LLL yyyy h:mm a' showTimeSelect timeFormat='HH:mm'/>
+                
+                <Field 
+                name='date' 
+                component={DateArea} 
+                placeholder='Event Date' 
+                dateFormat='dd LLL yyyy h:mm a' 
+                showTimeSelect 
+                timeFormat='HH:mm'
+                />
+
+                <Field 
+                component={TestPlacesInput} 
+                placeholder='Event City' 
+                name='city'
+                options={{types:['cities']}}
+                onSelect={this.handleCitySelect}
+                />
+
+                <Field 
+                placeholder='Event Venue' 
+                component={TestPlacesInput} 
+                name='Venue'
+                options={{
+                    Location: new google.maps.LatLng(this.state.cityLatLng),
+                    radius:1000,
+                    types:['establishment']
+                }}
+                onSelect={this.handleVenueSelect} 
+                />
+
                 <Form.Group>
                     <Form.Button primary disabled={invalid || submitting || pristine} type='submit'>Submit</Form.Button>
                     <Form.Button secondary>Cancel</Form.Button>
                 </Form.Group>
+
             </Form>
             </Segment>
         )

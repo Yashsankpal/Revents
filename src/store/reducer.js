@@ -7,8 +7,14 @@ const events= [
     Name: 'Donna Bednar',
     Profile_image: 'https://s3.amazonaws.com/uifaces/faces/twitter/picard102/128.jpg',
     date: '2020-06-27',
-    address: 'Molestias aliquid nihil recusandae molestiae dolorem corporis dolores quis eos quam error sed corporis ab.',
-    description: 'Officiis reprehender itaque distinctio itaque.'
+    city:'Officiis',
+    category:'Drinks',
+    Venue:'Officiis reprehender itaque distinctio',
+    description: 'Officiis reprehender itaque distinctio itaque.',
+    VenueLatLng:{
+      lat: 59.95,
+      lng: 30.33
+    }
   },
   {
     id: 1,
@@ -16,8 +22,14 @@ const events= [
     Name: 'Celia Ritchie',
     Profile_image: 'https://s3.amazonaws.com/uifaces/faces/twitter/gonzalorobaina/128.jpg',
     date: '2021-02-03',
-    address: 'Vel est nemo a ipsum architecto voluptas voluptatem exercitationem tenetur et quia dolores ut consectetur.',
-    description: 'Omnis ullam illo ationem consequatur sit.'      
+    city:'Omnis ullam',
+    Venue:'Omnis ullam illo ationem',
+    description: 'Omnis ullam illo ationem consequatur sit.',
+    category:'Drinks', 
+    VenueLatLng:{
+      lat: 59.95,
+      lng: 30.33
+    }     
   },
   {
     id: 2,
@@ -25,8 +37,14 @@ const events= [
     Name: 'Lambert Breitenberg',
     Profile_image: 'https://s3.amazonaws.com/uifaces/faces/twitter/vikashpathak18/128.jpg',
     date: '2020-06-16',
-    address: 'Amet et beatae itaque omnis quos nemo ducimus et vel tempore quia qui commodi est.',
-    description: 'uo repellat enim magni aspernatur est.'
+    city:'uo repellat',
+    Venue:'uo repellat enim magni',
+    description: 'uo repellat enim magni aspernatur est.',
+    category:'Drinks',
+    VenueLatLng:{
+      lat: 59.95,
+      lng: 30.33
+    }
   }
 ]
 

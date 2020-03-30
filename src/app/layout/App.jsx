@@ -11,7 +11,7 @@ import Settingsdashboard from '../../features/Event/user/settings/Settingsdashbo
 import Userdashboard from '../../features/Event/user/userDashboard/Userdashboard';
 import EventDetailed from '../../features/Event/EventDetailed/EventDetailed';
 import UserDetailed from '../../features/Event/user/UserDetailed';
-import testComponent from '../../test/testComponent';
+import TestComponent from '../../test/TestComponent';
 
 
 class App extends Component {
@@ -31,7 +31,7 @@ class App extends Component {
             <Route path='/events/:id' component={EventDetailed}/>
             <Route path='/profile/:id' components={UserDetailed}/>
             <Route path='/settings' component={Settingsdashboard}/>
-            <Route path='/test' component={testComponent}/>
+            <Route path='/test' component={TestComponent}/>
             <Route path='/detailpage/:id' component={EventDetailed}/>
           </Container>
           </Fragment>

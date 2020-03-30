@@ -5,7 +5,7 @@ import { NavLink } from 'react-router-dom'
 function EventHeading({event}) {
     return (
         <Segment.Group size='tiny'>
-            <header as='h4' fluid textAlign='center' >{event.event}
+            <header as='h4' fluid textAlign='center' >{event.event} {event.category}
             </header>
             <Image src={event.Profile_image}fluid size='massive'/>
             <Segment >
