@@ -1,13 +1,15 @@
 import React,{ useState } from 'react'
 import { Menu, Icon, Button } from 'semantic-ui-react'
 import MapDetail from './MapDetail'
+import { format ,parseISO } from 'date-fns'
 
 function EventContacts({event}) {
     const [isMapOpen,isToggleMap]=useState(false)
     return (
         <Menu vertical fluid>
             <Menu.Item>{event.description}<Icon name='dna' size='large'/></Menu.Item>
-            <Menu.Item ><Icon fitted name='calendar' size='large'/>{event.date}</Menu.Item>
+            <Menu.Item ><Icon fitted name='calendar' size='large'/>     
+                {format(parseISO(event.date),'EEEE do LLL')} at {format(parseISO(event.date),'h:mm a')}</Menu.Item>
             <Menu.Item>
                 <Icon size='large' name='location arrow'/>
                 {event.city} {event.Venue}

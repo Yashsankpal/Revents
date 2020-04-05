@@ -8,13 +8,23 @@ import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { configure } from './store/configure';
 import { createDevTools } from 'redux-devtools'
-
+import ReduxToastr from 'react-redux-toastr';
+import 'react-redux-toastr/lib/css/react-redux-toastr.min.css'
 const store=configure()
 
 const root = document.getElementById('root');
 
 let render=()=>{
-    ReactDOM.render(<Provider store={store}><BrowserRouter><App /></BrowserRouter></Provider>, root );
+    ReactDOM.render(<Provider store={store}>
+        <BrowserRouter>
+        <ReduxToastr
+        position='bottom-right'
+        transitionIn='fadeIn'
+        transitionOut='fadeOut'
+        />
+        <App />
+        </BrowserRouter>
+        </Provider>, root );
 };
 
 if(module.hot) {
