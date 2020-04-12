@@ -1,15 +1,21 @@
 import React, { Component } from 'react'
-import { Button } from 'semantic-ui-react'
+import { Button, Segment, Container, Header, Icon } from 'semantic-ui-react'
 import { NavLink } from 'react-router-dom'
 
 export default class homepage extends Component {
     render() {
         return (
-            <div>
-                homepage
-                <Button primary as={NavLink} to='/events' content='YO YO'/>
-            </div>
+                <Segment inverted textAlign='center' vertical className='masthead'>
+                <Container text>
+                  <Header as='h1' inverted>
+                    Re-vents
+                  </Header>
+                  <Button size='huge' inverted as={NavLink} to='/events'>
+                    Get started
+                    <Icon name='right arrow' inverted />
+                  </Button>
+                </Container>
+              </Segment>
         )
     }
 }
-

@@ -4,19 +4,25 @@ import { Field, reduxForm } from 'redux-form'
 import TextInput from '../../app/common/TextInput'
 import { connect } from 'react-redux'
 import { combineValidators, isRequired } from 'revalidate'
+import { login} from '../../auth/authActions'
+
 
 const validate = combineValidators({
     Username: isRequired({message:'Username Please'}),
     Password: isRequired({message:' Password Please'}),
 })
 
-const LoginForm = () => {
+const actions = {
+    login
+}
+
+const LoginForm = ({login,handleSubmit}) => {
     return (
-        <Form>
+        <Form onSubmit={handleSubmit(login)}>
             <Field 
             type='text' 
             component={TextInput}
-            name='Username'
+            name='email'
             placeholder='Username'/>
             <Field
             type='password'
@@ -31,4 +37,4 @@ const LoginForm = () => {
 
 }
 
-export default connect(null,null)(reduxForm({form:'modalForm',validate})(LoginForm))
+export default connect(null,actions)(reduxForm({form:'modalForm',validate})(LoginForm))

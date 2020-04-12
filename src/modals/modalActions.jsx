@@ -1,4 +1,4 @@
-import { MODAL_OPEN,MODAL_CLOSE } from './modalConstants'
+import { MODAL_OPEN , MODAL_CLOSE } from './modalConstants'
 
 export const openModal = (modalType,modalProps)=>{
     return{

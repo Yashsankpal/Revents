@@ -7,7 +7,7 @@ import { connect } from 'react-redux'
 
 const mapsStatetoProps = (state,ownProps)=>{
   const eventId=ownProps.match.params.id
-  let event= state.event
+  let event = state.event
   console.log(eventId);
   
   if(eventId && event.length > 0 ){

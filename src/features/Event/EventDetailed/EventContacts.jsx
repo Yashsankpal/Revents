@@ -7,12 +7,12 @@ function EventContacts({event}) {
     const [isMapOpen,isToggleMap]=useState(false)
     return (
         <Menu vertical fluid>
-            <Menu.Item>{event.description}<Icon name='dna' size='large'/></Menu.Item>
+            <Menu.Item><Icon name='dna' size='large'/></Menu.Item>
             <Menu.Item ><Icon fitted name='calendar' size='large'/>     
-                {format(parseISO(event.date),'EEEE do LLL')} at {format(parseISO(event.date),'h:mm a')}</Menu.Item>
+                 at </Menu.Item>
             <Menu.Item>
                 <Icon size='large' name='location arrow'/>
-                {event.city} {event.Venue}
+            
                 <Button floated='left' content='Map' size='mini' color='teal' onClick={()=>{isToggleMap(!isMapOpen)}}/>
             </Menu.Item>
             {

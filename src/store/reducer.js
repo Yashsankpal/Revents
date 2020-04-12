@@ -14,7 +14,9 @@ const events= [
     VenueLatLng:{
       lat: 59.95,
       lng: 30.33
-    }
+    },
+    attendees:[]
+
   },
   {
     id: 1,
@@ -29,7 +31,8 @@ const events= [
     VenueLatLng:{
       lat: 59.95,
       lng: 30.33
-    }     
+    },
+    attendees:[]     
   },
   {
     id: 2,
@@ -44,7 +47,8 @@ const events= [
     VenueLatLng:{
       lat: 59.95,
       lng: 30.33
-    }
+    },
+    attendees:[]
   }
 ]
 

@@ -2,15 +2,12 @@
 /* jshint ignore:start*/
 import React, { Component } from 'react';
 import EventLists from '../EventList/EventLists';
-import EventCreate from '../EventCreation/EventCreate';
-import { Button, Grid } from 'semantic-ui-react';
-import cuid from 'cuid';
-import faker from 'faker';
-import EventForm from '../EventForm/EventForm';
+import {  Grid } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import {deleteEvent,updateEvent,createEvent} from '../../../store/action'
+import { firestoreConnect } from 'react-redux-firebase';
 const mapsStatetoProps = (state)=>({
-  list: state.event
+  list: state.firestore.ordered.events
 })
 
 const actions = {
@@ -25,9 +22,14 @@ class EventDashboard extends Component {
     return (
       <Grid>
               <Grid.Column width='10'>
-                    {list.map(list=> (
+                    { 
+                      list
+                          && 
+                      list.map(list=> (
                       <EventLists key={list.id} list={list}></EventLists>
-                      ))}
+                        )
+                      )
+                    }
               </Grid.Column>
               <Grid.Column width='6'>
               </Grid.Column>
@@ -36,7 +38,7 @@ class EventDashboard extends Component {
       }
     }
     
-    export default connect(mapsStatetoProps,actions)(EventDashboard);
+    export default connect(mapsStatetoProps,actions)(firestoreConnect([{collection:'events'}])(EventDashboard));
     /*
     const {create_status}=this.state;
     state={
