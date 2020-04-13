@@ -1,10 +1,11 @@
 import React, { Component } from 'react'
-import { Form, Button } from 'semantic-ui-react'
+import { Form, Button,Label, Divider, Segment } from 'semantic-ui-react'
 import { Field, reduxForm } from 'redux-form'
 import TextInput from '../../app/common/TextInput'
 import { connect } from 'react-redux'
 import { combineValidators, isRequired } from 'revalidate'
-import { login} from '../../auth/authActions'
+import { login , socialLogin} from '../../auth/authActions'
+import { SocialLogin } from '../Event/acounts/SocialLogin'
 
 
 const validate = combineValidators({
@@ -13,12 +14,14 @@ const validate = combineValidators({
 })
 
 const actions = {
-    login
+    login,
+    socialLogin
 }
 
-const LoginForm = ({login,handleSubmit}) => {
+const LoginForm = ({login,handleSubmit,error,invalid,submitting,pristine,socialLogin}) => {
     return (
         <Form onSubmit={handleSubmit(login)}>
+            <Segment>
             <Field 
             type='text' 
             component={TextInput}
@@ -27,11 +30,13 @@ const LoginForm = ({login,handleSubmit}) => {
             <Field
             type='password'
             component={TextInput}
-            name='Password'
+            name='password'
             placeholder='Password'/>
-            <Form.Group>
-                <Form.Button color='teal'>Login</Form.Button>
-            </Form.Group>
+            {error && <Label basic color='red'>{error}</Label>}
+            <Button fluid color='teal' disabled={invalid || submitting || pristine}>Login</Button>
+            <Divider content='OR' horizontal />
+            <SocialLogin socialLogin={socialLogin}/>
+            </Segment>
         </Form>    
     )
 

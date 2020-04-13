@@ -9,16 +9,16 @@ import { openModal ,closeModal } from '../../../modals/modalActions'
 import Signout from '../../Event/acounts/Signout';
 import SignIn from '../../Event/acounts/SignIn';
 import { withFirebase } from 'react-redux-firebase';
-import {logout} from '../../../auth/authActions'
+
 
 const options = {
     openModal,
-    logout,
     closeModal
 }
 
 const mapstate = (state)=>({
-    auth : state.auth
+    auth : state.firebase.auth,
+    profile:state.firebase.profile
 })
 
 class navbar extends Component {
@@ -32,14 +32,14 @@ class navbar extends Component {
     }
 
     handleSignOut=()=>{
-        this.props.logout()
+        this.props.firebase.logout()
         this.props.closeModal()
         this.props.history.push('/')
     }
 
     render() {
-        const { auth } = this.props
-        const authenticated = auth.authenticated
+        const { auth , profile } = this.props
+        const authenticated = auth.isLoaded && !auth.isEmpty
         return (
             <Menu fixed='top'>
                 <Container>
@@ -49,7 +49,7 @@ class navbar extends Component {
                 <Menu.Item as={NavLink} to='/test' name='test'/>
                 <Menu.Item as={NavLink} to='/eventCreation' name='Create Event'/>
                 { authenticated ?
-                    <Menu.Item><SignIn signout={this.handleSignOut} currentUser={auth.currentUser}/></Menu.Item>
+                    <Menu.Item><SignIn profile={profile}signOut={this.handleSignOut} auth={auth}/></Menu.Item>
                     :
                     <Signout Login={this.handleLogin} Register={this.handleRegister}/>
                 }
@@ -59,7 +59,7 @@ class navbar extends Component {
         }
     }
     
-    export default withRouter(connect(mapstate,options)(navbar));
+    export default withRouter(withFirebase(connect(mapstate,options)(navbar)));
     
     /*
     <LoginModal dimmer={true} open={this.state.open} close={this.close}/>

@@ -1,9 +1,12 @@
 import React, { Component } from 'react'
 import { reduxForm, Field } from 'redux-form'
 import { connect } from 'react-redux'
-import { Form } from 'semantic-ui-react'
+import { Form, Button, Segment, Label, Divider } from 'semantic-ui-react'
 import TextInput from '../../app/common/TextInput'
 import { combineValidators, isRequired, composeValidators, hasLengthGreaterThan, hasLengthBetween } from 'revalidate'
+import { registerUser } from '../../auth/authActions'
+import { invalid } from 'moment'
+import { SocialLogin } from '../Event/acounts/SocialLogin'
 
 const validate = combineValidators({
     Username: isRequired({message:'Enter the Username please'}),
@@ -13,28 +16,47 @@ const validate = combineValidators({
     )(),
 })
 
-
-
-class RegisterForm extends Component {
-    render() {
-        return (
-            <Form>
-            <Field 
-            type='text' 
-            component={TextInput}
-            name='Username'
-            placeholder='Username'/>
-            <Field
-            type='password'
-            component={TextInput}
-            name='Password'
-            placeholder='Password'/>
-            <Form.Group>
-                <Form.Button color='teal'>Register</Form.Button>
-            </Form.Group>
-        </Form>  
-        )
-    }
+const actions = {
+    registerUser
 }
 
-export default connect(null,null)(reduxForm({form:'modalForm',validate})(RegisterForm))
+const RegisterForm= ({error ,handleSubmit,registerUser,invalid,submitting,pristine})=> {
+    return (
+      <Form onSubmit={handleSubmit(registerUser)}>
+          <Segment>
+            <Field
+              name="displayName"
+              type="text"
+              component={TextInput}
+              placeholder="Known As"
+            />
+            <Field
+              name="email"
+              type="text"
+              component={TextInput}
+              placeholder="Email"
+            />
+            <Field
+              name="password"
+              type="password"
+              component={TextInput}
+              placeholder="Password"
+            />
+            {error && <Label basic color='red'>{error}</Label>}
+            <Button fluid size="large" color="teal" disabled={invalid || submitting || pristine}>
+              Register
+            </Button>
+            <Divider content='OR' horizontal />
+            <SocialLogin/>
+          </Segment>
+        </Form>
+    );
+
+}
+
+export default connect(null,actions)(reduxForm({form:'modalForm',validate})(RegisterForm))
+
+
+
+
+
