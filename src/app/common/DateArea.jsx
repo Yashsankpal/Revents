@@ -3,12 +3,16 @@ import { Form, Label } from 'semantic-ui-react'
 import SemanticDatepicker from 'react-semantic-ui-datepickers'
 import DatePicker from 'react-datepicker'
 import "react-datepicker/dist/react-datepicker.css";
-const DateArea = ({input, width, placeholder, meta: {touched, error}, ...rest}) => {
+import moment from 'moment';
+const DateArea = ({input:{value,onChange,onBlur,...restInput}, width, placeholder, meta: {touched, error}, ...rest}) => {
     return (
-        <Form.Field error={touched && !!error} >
-           <DatePicker {...rest} placeholderText={placeholder} onChange={input.onChange} onBlur={input.onBlur}
-           selected={input.value ? new Date(input.value) : null}
-           onChangeRaw={(e)=>e.preventDefault()}/>
+        <Form.Field error={touched && !!error} width={width}>
+           <DatePicker {...rest} placeholderText={placeholder} onChange={onChange}
+           selected={value ? Object.prototype.toString.call(value) !== '[Object value]' ? value.toISOString() : value : null}
+           onBlur={(e,val)=>onBlur(val)}
+           onchangeRaw={(e)=>e.preventDefault()}
+           {...restInput}
+        />
             {touched && error && <Label basic color='red'>{error}</Label>}
         </Form.Field>
     )

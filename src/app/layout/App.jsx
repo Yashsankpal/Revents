@@ -10,7 +10,7 @@ import EventCreate from '../../features/Event/EventCreation/EventCreate';
 import Settingsdashboard from '../../features/Event/user/settings/Settingsdashboard';
 import Userdashboard from '../../features/Event/user/userDashboard/Userdashboard';
 import EventDetailed from '../../features/Event/EventDetailed/EventDetailed';
-import UserDetailed from '../../features/Event/user/UserDetailed';
+import UserDetailedPage from '../../features/Event/user/UserDetailed';
 import TestComponent from '../../test/TestComponent';
 
 
@@ -29,7 +29,7 @@ class App extends Component {
             <Route path={['/eventCreation','/manage/:id']} component={EventCreate}/>
             <Route path='/people' component={Userdashboard}/>
             <Route path='/events/:id' component={EventDetailed}/>
-            <Route path='/profile/:id' components={UserDetailed}/>
+            <Route path='/profile/:id' component={UserDetailedPage}/>
             <Route path='/settings' component={Settingsdashboard}/>
             <Route path='/test' component={TestComponent}/>
             <Route path='/detailpage/:id' component={EventDetailed}/>

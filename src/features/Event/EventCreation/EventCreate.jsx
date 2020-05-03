@@ -5,7 +5,7 @@ import React, { Component } from 'react'
 import { Form , Input, Segment } from 'semantic-ui-react';
 import {reduxForm , Field} from 'redux-form'
 import { connect } from 'react-redux';
-import {createEvent,deleteEvent,updateEvent} from '../../../store/action'
+import {createEvent,deleteEvent,updateEvent, cancelToggle} from '../../../store/action'
 import cuid from 'cuid';
 import faker from 'faker'
 import TextArea from '../../../app/common/TextArea';
@@ -15,26 +15,23 @@ import SelectInput from '../../../app/common/SelectInput';
 import { combineValidators, isRequired, composeValidators, hasLengthGreaterThan } from 'revalidate';
 import TestPlacesInput from '../../../app/common/TestPlacesInput';
 import { geocodeByAddress, getLatLng } from 'react-places-autocomplete';
+import { toastr } from 'react-redux-toastr';
+import { withFirestore } from 'react-redux-firebase';
 
 
 const mapsStatetoProps = (state,ownProps) => {
-    const eventId = ownProps.match.params.id
-    let temp= {id:'',description:'',event:'',Name:'',category:'',city:'',Venue:''}
-    let event= state.event
-    
-    if(eventId && event.length > 0 ){
-      event = event.filter(event => event.id == eventId)[0]
-      temp = event
-      console.log(temp);  
+
+    let event = {}
+
+    if (state.firestore.ordered.events && state.firestore.ordered.events[0]) {
+        event = state.firestore.ordered.events.find(event => ownProps.match.params.id === event.id)||{}
     }
   
-   return {
-       eventId,
-       initialValues:temp,
-       temp
-    }
-};
-
+    return {
+      initialValues: event,
+      event,
+    };
+  };
 const options = [
     { key: 1, text: 'Drinks', value: 'Drinks' },
     { key: 2,text: 'Culture',value: 'Culture'},
@@ -47,7 +44,8 @@ const options = [
 const actions = {
     createEvent,
     deleteEvent,
-    updateEvent
+    updateEvent,
+    cancelToggle
 }
 const validate = combineValidators({
     event: isRequired({message:'Requires title'}),
@@ -66,20 +64,35 @@ class EventCreate extends Component {
         cityLatLng:{},
         venueLatLng:{},
     }
+
+    async componentDidMount(){
+        const { firestore , match} = this.props
+        let event = await firestore.setListener(`events/${match.params.id}`)
+      }
+
+    async componentWillUnmount(){
+        const { firestore , match} = this.props
+        let event = await firestore.unsetListener(`events/${match.params.id}`)
+    }
+
     toSubmit=async values=>{
         values.venueLatLng = this.state.venueLatLng
-        if(values.id){
-            console.log(values);
-            this.props.updateEvent(values)
-            this.props.history.push(`/detailpage/${values.id}`)
+        try {
+            if(this.props.initialValues.id){
+                if(Object.keys(values.venueLatLng).length === 0){
+                    values.venueLatLng = this.props.event.venueLatLng
+                }
+                this.props.updateEvent(values)
+                this.props.history.goBack()
+            }
+            else{
+                await this.props.createEvent(values);
+                this.props.history.push(`/events`)
+            }
+        } catch (error) {
+            console.log(error)
         }
-        else{
-            values.id=cuid()
-            values.Profile_image=faker.image.avatar()
-            console.log(values);            
-            this.props.createEvent(values);
-            this.props.history.push(`/events`)
-        }
+        
     }
     
     handleCitySelect = selectedCity =>{
@@ -114,7 +127,7 @@ class EventCreate extends Component {
 
     /*<Form.Select options={options} placeholder='What is your event about?'/>*/
     render() {
-        const {initialValues,invalid,submitting,pristine} = this.props
+        const {initialValues,invalid,submitting,pristine,event,cancelToggle} = this.props
         return (
             <Segment>
             <Form onSubmit={this.props.handleSubmit(this.toSubmit)}>              
@@ -144,14 +157,6 @@ class EventCreate extends Component {
 
                 <h4>Event Location Details</h4>
                 
-                <Field 
-                name='date' 
-                component={DateArea} 
-                placeholder='Event Date' 
-                dateFormat='dd LLL yyyy h:mm a' 
-                showTimeSelect 
-                timeFormat='HH:mm'
-                />
 
                 <Field 
                 component={TestPlacesInput} 
@@ -175,7 +180,9 @@ class EventCreate extends Component {
 
                 <Form.Group>
                     <Form.Button primary disabled={invalid || submitting || pristine} type='submit'>Submit</Form.Button>
-                    <Form.Button secondary>Cancel</Form.Button>
+                    <Form.Button  
+                    onClick={()=>cancelToggle(!event.cancelled,event.id)} type='Button' color={event.cancelled?'green':'red'}
+                    floated='right' content={event.cancelled ? 'Reactivate event ': 'Cancel event '} />
                 </Form.Group>
 
             </Form>
@@ -184,13 +191,21 @@ class EventCreate extends Component {
     }
 }
 
-export default connect(mapsStatetoProps,actions)(reduxForm({form:'eventCreate',validate})(EventCreate));
+export default withFirestore(connect(mapsStatetoProps,actions)(reduxForm({form:'eventCreate',validate})(EventCreate)));
 /*
 if(eventId && event.length > 0 ){
     event = event.filter(event => event.id == eventId)[0]
     console.log(event);
     
 }
+<Field 
+name='date' 
+component={DateArea} 
+placeholder='Event Date' 
+dateFormat='dd LLL yyyy h:mm a' 
+showTimeSelect 
+timeFormat='HH:mm'
+/>
 formChangehandler=({target:{name,value}})=>{
     this.setState({
         [name] : value

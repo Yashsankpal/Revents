@@ -5,16 +5,19 @@ import { Switch, Route, Redirect } from 'react-router-dom';
 import SettingsNav from './SettingsNav';
 import BasicPage from './basicPage';
 import AboutPage from './AboutPage';
-import PhotosPage from './PhotosPage';
+import PhotosPage from './Photos/PhotosPage';
 import AccountPage from './AccountPage';
 import {updatePassword} from '../../../../auth/authActions'
+import {updateProfile} from '../userActions'
 
 const actions = {
-  updatePassword
+  updatePassword,
+  updateProfile
 }
 
 const mapState = state =>({
-  providerId: !state.firebase.auth.isloaded && state.firebase.auth.providerData[0].providerId
+  providerId: !state.firebase.auth.isloaded && state.firebase.auth.providerData[0].providerId,
+  user : state.firebase.profile  
 })
 
 const SettingsDashboard = ({ updatePassword, providerId, user, updateProfile }) => {
@@ -23,8 +26,8 @@ const SettingsDashboard = ({ updatePassword, providerId, user, updateProfile }) 
       <Grid.Column width={12}>
         <Switch>
           <Redirect exact from="/settings" to="/settings/basic" />
-          <Route path="/settings/basic" render={() => <BasicPage />}/>
-          <Route path="/settings/about" render={() => <AboutPage />}/>
+          <Route path="/settings/basic" render={() => <BasicPage initialValues={user} updateProfile={updateProfile}/>}/>
+          <Route path="/settings/about" render={() => <AboutPage initialValues={user} updateProfile={updateProfile}/>}/>
           <Route path="/settings/photos" component={PhotosPage} />
           <Route path="/settings/account" render={() => <AccountPage updatePassword={updatePassword} providerId={providerId} />}/>
         </Switch>

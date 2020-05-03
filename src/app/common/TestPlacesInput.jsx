@@ -4,14 +4,14 @@ import { Form, Segment, List, Label } from 'semantic-ui-react'
 import PlacesAutocomplete from 'react-places-autocomplete'
 
 
-const TestPlacesInput = ({input:{value,onChange,onBlur}, type, placeholder,options, meta: {touched, error}}) => {
+const TestPlacesInput = ({input:{value,onChange,onBlur}, type, placeholder,width,options, meta: {touched, error}}) => {
   return (
     <PlacesAutocomplete
       value={value}
       onChange={onChange}
       searchOptions={options}>
         {({getInputProps,suggestions,getSuggestionsItemProps,loading})=>(
-          <Form.Field>
+          <Form.Field width={width}>
             <input placeholder={placeholder} {...getInputProps({placeholder,onBlur})} />
             {touched && error && <Label basic color='red'>{error}</Label>}
             {suggestions.length > 0 && (

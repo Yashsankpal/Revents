@@ -3,7 +3,7 @@ import { Menu, Icon, Button } from 'semantic-ui-react'
 import MapDetail from './MapDetail'
 import { format ,parseISO } from 'date-fns'
 
-function EventContacts({event}) {
+const EventContacts=({event})=>{
     const [isMapOpen,isToggleMap]=useState(false)
     return (
         <Menu vertical fluid>
