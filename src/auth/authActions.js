@@ -2,6 +2,7 @@ import {LOGIN_USER,SIGN_OUT_USER} from './authConstants'
 import {closeModal } from '../modals/modalActions' 
 import { SubmissionError , reset} from 'redux-form'
 import { toastr } from 'react-redux-toastr'
+import firebase from "../app/config/firebase"
 
 export const login = creds =>{
     return async(dispatch,getState,{getFirebase})=>{
@@ -39,7 +40,7 @@ export const registerUser = user =>
                 createdAt: firestore.FieldValue.serverTimestamp()
             }
 
-            await firestore.set(`user/${createdUser.uid}`,{...newUser})
+            await firestore.set(`users/${createdUser.user.uid}`,{...newUser})
             dispatch(closeModal())
         } catch (error) {
             console.log(error)
@@ -53,6 +54,7 @@ export const registerUser = user =>
 
     export const socialLogin = (selectedProvider) => 
     async (dispatch, getState, {getFirebase, getFirestore}) => {
+      //const store = firebase.firestore()
       const firebase = getFirebase();
       const firestore = getFirestore();
       try {
@@ -61,7 +63,9 @@ export const registerUser = user =>
           provider: selectedProvider,
           type: 'popup'
         })
-        if (user.additionalUserInfo.isNewUser) {
+        console.log(user)
+        console.log(firestore.get(`users/${user.user.uid}`))
+        if (!firestore.get(`users/${user.user.uid}`)) {
             await firestore.set(`users/${user.user.uid}`, {
               displayName: user.profile.displayName,
               photoURL: user.profile.avatarUrl,
@@ -69,10 +73,30 @@ export const registerUser = user =>
             })
         }
       } catch (error) {
-        console.log(error)
+        console.log(error) 
       }
     }
 
+    export const socialSignup = (selectedProvider) =>
+        async (dispatch,getState,{getFirebase,getFirestore})=>{
+            const firebase = getFirebase()
+            const firestore = getFirestore()
+            try{
+                dispatch(closeModal());
+                let user = await firebase.login({
+                  provider: selectedProvider,
+                  type: 'popup'
+                })
+                    await firestore.set(`users/${user.user.uid}`, {
+                      displayName: user.profile.displayName,
+                      photoURL: user.profile.avatarUrl,
+                      createdAt: firestore.FieldValue.serverTimestamp()
+                    })
+            }
+            catch(error){
+                console.log(error)
+            }
+        }
 export const updatePassword = creds => 
     async(dispatch,getState,{getFirebase})=>{
         const firebase = getFirebase()

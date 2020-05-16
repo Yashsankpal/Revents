@@ -1,29 +1,54 @@
-import React, {Component} from 'react';
-import {Button, Card, Grid, Header, Icon, Image, Item, List, Menu, Segment} from "semantic-ui-react";
+import React, {Component, Fragment} from 'react';
+import {Button, Card, Grid, Header, Icon, Image, Item, List, Menu, Segment, Tab} from "semantic-ui-react";
 import { connect } from 'react-redux';
+import {getUserEvent} from './userActions'
+import { firestoreConnect } from 'react-redux-firebase';
+import { usr_events_query } from './userQueries';
 
-const mapState = (state) => ({
+
+const actions = {
+    getUserEvent
+}
+
+const mapState = (state,ownProps) => (
+    {
     auth: state.firebase.auth,
-    profile: state.firebase.profile
+    profile: state.firebase.profile,
+    photos: state.firestore.ordered.photos,
+    userid:ownProps.match.params.id,
+    events:state.event
 })
 
-class UserDetailedPage extends Component {
+const panes = [
+    { menuItem: 'All events', pane: { key: 'allEvents' } },
+    { menuItem: 'Past events', pane: { key: 'pastEvents' } },
+    { menuItem: 'Future events', pane: { key: 'futureEvents' } },
+]
 
+class UserDetailedPage extends Component {
+    componentDidMount=()=>{
+        this.props.getUserEvent(this.props.userid)
+    }
+    changeTab = (e,data)=>{
+        console.log(this.props.userid)
+        console.log(data.activeIndex)
+        this.props.getUserEvent(this.props.userid,data.activeIndex)
+    }
     render() {
-        const {auth,profile}=this.props
+        const {events,auth,profile,photos,userid}=this.props
         return (
             <Grid>
                 <Grid.Column width={16}>
                     <Segment>
                         <Item.Group>
                             <Item>
-                                <Item.Image avatar size='small' src={profile.photoURL}/>
+                                <Item.Image avatar size='small' src={profile.photoURL||null}/>
                                 <Item.Content verticalAlign='bottom'>
-                                    <Header as='h1'>{auth.displayName}</Header>
+                                    <Header as='h1'>{profile.displayName}</Header>
                                     <br/>
-                                    <Header as='h3'>{auth.occupation || "Unkown Details"}</Header>
+                                    <Header as='h3'>{profile.occupation}</Header>
                                     <br/>
-                                    <Header as='h3'>'date' </Header>
+                                    <Header as='h3'>{profile.dateofBirth}</Header>
                                 </Item.Content>
                             </Item>
                         </Item.Group>
@@ -35,28 +60,26 @@ class UserDetailedPage extends Component {
                         <Grid columns={2}>
                             <Grid.Column width={10}>
                                 <Header icon='smile' content='About Display Name'/>
-                                <p>I am a: <strong>Occupation Placeholder</strong></p>
+                                <p>I am a: <strong>{profile.occupation}</strong></p>
                                 <p>Originally from <strong>United Kingdom</strong></p>
-                                <p>Member Since: <strong>28th March 2018</strong></p>
+                                <p>Member Since: <strong></strong></p>
                                 <p>Description of user</p>
+                                <p>{profile.about}</p>
 
                             </Grid.Column>
                             <Grid.Column width={6}>
-
                                 <Header icon='heart outline' content='Interests'/>
                                 <List>
-                                    <Item>
-                                        <Icon name='heart'/>
-                                        <Item.Content>Interest 1</Item.Content>
-                                    </Item>
-                                    <Item>
-                                        <Icon name='heart'/>
-                                        <Item.Content>Interest 2</Item.Content>
-                                    </Item>
-                                    <Item>
-                                        <Icon name='heart'/>
-                                        <Item.Content>Interest 3</Item.Content>
-                                    </Item>
+                                    {profile.interests && profile.interests.length > 0  ?  
+                                        profile.interests.map((item,index) => (
+                                            <Fragment>
+                                            <Item key={index}>
+                                                <Icon name='heart'/>
+                                            <   Item.Content>{item}</Item.Content>
+                                            </Item>
+                                            </Fragment>
+                                        )
+                                        ):(<p>No interests</p>)}
                                 </List>
                             </Grid.Column>
                         </Grid>
@@ -68,57 +91,49 @@ class UserDetailedPage extends Component {
                         <Button color='teal' fluid basic content='Edit Profile'/>
                     </Segment>
                 </Grid.Column>
-
                 <Grid.Column width={12}>
                     <Segment attached>
                         <Header icon='image' content='Photos'/>
-                        
-                        <Image.Group size='small'>
-                            <Image src='https://randomuser.me/api/portraits/men/20.jpg'/>
-                            <Image src='https://randomuser.me/api/portraits/men/20.jpg'/>
-                            <Image src='https://randomuser.me/api/portraits/men/20.jpg'/>
-                            <Image src='https://randomuser.me/api/portraits/men/20.jpg'/>
-                        </Image.Group>
+                        { photos ?
+                            <Fragment>
+                            <Image.Group size='small'>
+                               {
+                                    photos.map((item,index)=>(
+                                        <Image key={index} src={item.url}/>
+                                        ))
+                               }
+                            </Image.Group>
+                            </Fragment>
+                        :(<p>No Photos</p>)}    
                     </Segment>
                 </Grid.Column>
-
                 <Grid.Column width={12}>
                     <Segment attached>
                         <Header icon='calendar' content='Events'/>
                         <Menu secondary pointing>
-                            <Menu.Item name='All Events' active/>
-                            <Menu.Item name='Past Events'/>
-                            <Menu.Item name='Future Events'/>
-                            <Menu.Item name='Events Hosted'/>
+                            <Tab 
+                            onTabChange={(e,data) => this.changeTab(e,data)}
+                            panes={panes}
+                            menu={{ secondary: true, pointing: true }}
+                            />
                         </Menu>
 
                         <Card.Group itemsPerRow={5}>
-
-                            <Card>
-                                <Image src={'/assets/categoryImages/drinks.jpg'}/>
-                                <Card.Content>
-                                    <Card.Header textAlign='center'>
-                                        Event Title
-                                    </Card.Header>
-                                    <Card.Meta textAlign='center'>
-                                        28th March 2018 at 10:00 PM
-                                    </Card.Meta>
-                                </Card.Content>
-                            </Card>
-
-                            <Card>
-                                <Image src={'/assets/categoryImages/drinks.jpg'}/>
-                                <Card.Content>
-                                    <Card.Header textAlign='center'>
-                                        Event Title
-                                    </Card.Header>
-                                    <Card.Meta textAlign='center'>
-                                        28th March 2018 at 10:00 PM
-                                    </Card.Meta>
-                                </Card.Content>
-                            </Card>
-
-                        </Card.Group>
+                            {events ?
+                                   events.map((item,index)=>(
+                                        <Card key={index}>
+                                            <Image src={item.Profile_image}/>
+                                            <Card.Content>
+                                                <Card.Header textAlign='center'>
+                                                    {item.event}
+                                                </Card.Header>
+                                                <Card.Meta textAlign='center'>
+                                                    {item.date} at {item.time}
+                                                </Card.Meta>
+                                            </Card.Content>
+                                        </Card>
+                            )):<p>Sorry no events</p>}
+                       </Card.Group>
                     </Segment>
                 </Grid.Column>
             </Grid>
@@ -127,4 +142,4 @@ class UserDetailedPage extends Component {
     }
 }
 
-export default connect(mapState,null)(UserDetailedPage);
+export default connect(mapState,actions)(firestoreConnect([{collection:'events'}])(UserDetailedPage));

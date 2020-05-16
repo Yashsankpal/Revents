@@ -7,6 +7,7 @@ import TextInput from "../../../../app/common/TextInput";
 import RadioInput from  "../../../../app/common/RadioInput";
 import moment from 'moment';
 import { updateProfile } from '../userActions';
+import { addDays } from 'date-fns';
 
 class basicPage extends Component {
 
@@ -30,15 +31,11 @@ class basicPage extends Component {
                 </Form.Group>
                     <Field
                         width={8}
-                        name='dateOfBirth'
+                        type='date'
+                        name='dateofBirth'
                         component={DateArea}
-                        placeholder='Date of Birth'
-                        dateFormat='YYYY-MM-DD'
-                        maxDate={moment().subtract(18,'years')}
-                        showYearDropdown={true}
-                        showMonthDropdown={true}
-                        dropdownMode='select'
-                    />
+                        label='Date of Birth'
+                     />
                     <Field
                         name='city'
                         placeholder='Home Town'

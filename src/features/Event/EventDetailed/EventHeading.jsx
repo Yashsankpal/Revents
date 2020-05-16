@@ -2,10 +2,13 @@ import React, { Fragment } from 'react'
 import { Image, Segment, Button, Item, Header } from 'semantic-ui-react'
 import { NavLink } from 'react-router-dom'
 import LazyLoad from 'react-lazyload'
+import moment from 'moment'
+import { format } from 'date-fns'
+import { formatISO } from 'date-fns/esm'
 
-const EventHeading = ({event,isGoing,isHost,goingToEvent,cancelgoingToEvent}) =>{
+const EventHeading = ({event,date,isGoing,isHost,goingToEvent,cancelgoingToEvent}) =>{
     return (
-<Segment.Group>
+    <Segment.Group>
       <Segment basic attached="top" style={{ padding: '0' }}>
         <Image src="/assets/categoryImages/drinks.jpg" fluid />
 
@@ -18,7 +21,7 @@ const EventHeading = ({event,isGoing,isHost,goingToEvent,cancelgoingToEvent}) =>
                   content={event.event}
                   style={{ color: 'white' }}
                 />
-                <p>Event Date : Working on it</p>
+                <p>Event Date : {event.date}</p>
                 <p>
                   Hosted by <strong>{event.hostedBy}</strong>
                 </p>

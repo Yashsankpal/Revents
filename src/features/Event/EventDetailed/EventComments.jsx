@@ -1,81 +1,126 @@
 import React from 'react'
-import { Segment, Comment, Header, Form, Button } from 'semantic-ui-react'
+import { Segment, Comment, Header} from 'semantic-ui-react'
+import EventCommentForm from './EventCommentForm'
+import { Link } from 'react-router-dom'
+import { formatDistance } from 'date-fns'
+import { Fragment } from 'react'
+import { Component } from 'react'
 
-function EventComments() {
-    return (
-<Segment>
 
-<Comment.Group>
-<Header as='h3' dividing>
-Comments
-</Header>
-
-<Comment>
-<Comment.Avatar src='https://placeimg.com/640/360/any' />
-<Comment.Content>
-<Comment.Author as='a'>Matt</Comment.Author>
-<Comment.Metadata>
-<div>Today at 5:42PM</div>
-</Comment.Metadata>
-<Comment.Text>How artistic!</Comment.Text>
-<Comment.Actions>
-<Comment.Action>Reply</Comment.Action>
-</Comment.Actions>
-</Comment.Content>
-</Comment>
-
-<Comment>
-<Comment.Avatar src='https://placeimg.com/640/360/any' />
-<Comment.Content>
-<Comment.Author as='a'>Elliot Fu</Comment.Author>
-<Comment.Metadata>
-<div>Yesterday at 12:30AM</div>
-</Comment.Metadata>
-<Comment.Text>
-<p>This has been very useful for my research. Thanks as well!</p>
-</Comment.Text>
-<Comment.Actions>
-<Comment.Action>Reply</Comment.Action>
-</Comment.Actions>
-</Comment.Content>
-<Comment.Group>
-<Comment>
-<Comment.Avatar src='https://placeimg.com/640/360/any' />
-<Comment.Content>
-<Comment.Author as='a'>Jenny Hess</Comment.Author>
-<Comment.Metadata>
-<div>Just now</div>
-</Comment.Metadata>
-<Comment.Text>Elliot you are always so right :)</Comment.Text>
-<Comment.Actions>
-<Comment.Action>Reply</Comment.Action>
-</Comment.Actions>
-</Comment.Content>
-</Comment>
-</Comment.Group>
-</Comment>
-
-<Comment>
-<Comment.Avatar src='https://placeimg.com/640/360/any' />
-<Comment.Content>
-<Comment.Author as='a'>Joe Henderson</Comment.Author>
-<Comment.Metadata>
-<div>5 days ago</div>
-</Comment.Metadata>
-<Comment.Text>Dude, this is awesome. Thanks so much</Comment.Text>
-<Comment.Actions>
-<Comment.Action>Reply</Comment.Action>
-</Comment.Actions>
-</Comment.Content>
-</Comment>
-
-<Form reply>
-<Form.TextArea />
-<Button content='Add Reply' labelPosition='left' icon='edit' primary />
-</Form>
-</Comment.Group>
-</Segment>
-    )
+class EventComments extends Component {
+    state = {
+        showReplyForm: false,
+        selectedCommentId:null
+    }
+    handleOpenReplyForm = (id) => () => {
+        this.setState({
+            showReplyForm:true,
+            selectedCommentId:id
+        })
+    }
+    handleCloseReplyForm = () => {
+        this.setState({
+            showReplyForm:false,
+            selectedCommentId:null
+        })
+    }
+    render() {
+        const { getEventcomment , eventChat , eventId } = this.props
+        const { showReplyForm , selectedCommentId } = this.state
+        return (
+            <Fragment>
+            <Segment
+                        textAlign='center'
+                        attached='top'
+                        inverted
+                        color='teal'
+                        style={{ border: 'none' }}
+                    >
+                    <Header as='h3' dividing>
+                    Comments
+                    </Header>
+            </Segment>
+            <Segment attached>
+                <Comment.Group>
+                    {eventChat && 
+                        eventChat.map((comment)=>(
+                            <Comment key={comment.id}>
+                                <Comment.Avatar src={comment.photoURL || 'null'} />
+                                <Comment.Content>
+                                    <Comment.Author as={Link} to={`/profile/${comment.uid}`}>{comment.displayName}</Comment.Author>
+                                    <Comment.Metadata>
+                                    <div> ago</div>
+                                    </Comment.Metadata>
+                                    <Comment.Text>{comment.text}</Comment.Text>
+                                    <Comment.Actions>
+                                        <Comment.Action onClick={this.handleOpenReplyForm(comment.id)} >Reply</Comment.Action>
+                                        { showReplyForm && selectedCommentId === comment.id && (
+                                            <EventCommentForm
+                                            getEventcomment={getEventcomment}
+                                            eventId={eventId}
+                                            form={`reply_${comment.id}`}
+                                            parentId={comment.id}
+                                            closeForm={this.handleCloseReplyForm}/>
+                                        )
+                                        }
+                                    </Comment.Actions>
+                                </Comment.Content>
+                                {comment.childNodes &&
+                                comment.childNodes.map(child => (
+                                <Comment.Group key={child.id}>
+                                    <Comment>
+                                    <Comment.Avatar
+                                        src={child.photoURL || '/assets/user.png'}
+                                    />
+                                    <Comment.Content>
+                                        <Comment.Author
+                                        as={Link}
+                                        to={`/profile/${child.uid}`}
+                                        >
+                                        {child.displayName}
+                                        </Comment.Author>
+                                        <Comment.Metadata>
+                                        <div>
+                                       ago
+                                        </div>
+                                        </Comment.Metadata>
+                                        <Comment.Text>{child.text}</Comment.Text>
+                                        <Comment.Actions>
+                                        <Comment.Action
+                                            onClick={this.handleOpenReplyForm(child.id)}
+                                        >
+                                            Reply
+                                        </Comment.Action>
+                                        {showReplyForm &&
+                                            selectedCommentId === child.id && (
+                                            <EventCommentForm
+                                                getEventcomment={getEventcomment}
+                                                eventId={eventId}
+                                                form={`reply_${child.id}`}
+                                                closeForm={this.handleCloseReplyForm}
+                                                parentId={child.parentId}
+                                            />
+                                            )}
+                                        </Comment.Actions>
+                                    </Comment.Content>
+                                    </Comment>
+                                </Comment.Group>
+                                ))}
+                            </Comment>
+                    ))}
+                </Comment.Group>
+                <EventCommentForm 
+                getEventcomment={getEventcomment} 
+                eventId={eventId} 
+                form={'newComment'}
+                parentId={0}
+                />
+            </Segment>
+        </Fragment>
+        )
+    }
 }
 
+
 export default EventComments
+

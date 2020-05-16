@@ -9,6 +9,7 @@ import { openModal ,closeModal } from '../../../modals/modalActions'
 import Signout from '../../Event/acounts/Signout';
 import SignIn from '../../Event/acounts/SignIn';
 import { withFirebase } from 'react-redux-firebase';
+import { Fragment } from 'react';
 
 
 const options = {
@@ -47,9 +48,11 @@ class navbar extends Component {
                 <Menu.Item  as={NavLink} to='/events' name='Events'/>
                 <Menu.Item as={NavLink} to='/people' name='people'/>
                 <Menu.Item as={NavLink} to='/test' name='test'/>
-                <Menu.Item as={NavLink} to='/eventCreation' name='Create Event'/>
                 { authenticated ?
-                    <Menu.Item><SignIn profile={profile}signOut={this.handleSignOut} auth={auth}/></Menu.Item>
+                <Fragment>
+                <Menu.Item as={NavLink} to='/eventCreation' name='Create Event'/>
+                <Menu.Item><SignIn profile={profile} signOut={this.handleSignOut} auth={auth}/></Menu.Item>
+                </Fragment>
                     :
                     <Signout Login={this.handleLogin} Register={this.handleRegister}/>
                 }

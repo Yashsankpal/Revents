@@ -1,16 +1,20 @@
 import { toastr } from "react-redux-toastr"
 import moment from "moment"
-import { asyncActionStart , asyncActionFinish } from "../../../async/asynActions"
+import { asyncActionStart , asyncActionFinish, asyncActionError } from "../../../async/asynActions"
 import cuid from "cuid"
+import firebase from "../../../app/config/firebase"
+import { FETCH_EVENTS } from "../../../store/constant"
+import { ASYNC_ACTION_START, ASYNC_ACTION_FINISH, ASYNC_ACTION_ERROR } from "../../../async/asynConstants"
 
 export const updateProfile = (user) =>
 async (dispatch,getState,{getFirebase}) => {
     const firebase = getFirebase()
     const { isLoaded, isEmpty, ...updatedUser} = user
 
+    console.log(user)
     if(updatedUser.dateofBirth){
         updatedUser.dateofBirth = moment(updatedUser.dateofBirth).toISOString()
-    }
+        }
     try {
         await firebase.updateProfile(user)
         toastr.success('Success','Your profile has been updated')
@@ -143,3 +147,111 @@ async (dispatch,getState,{getFirestore,getFirebase})=>{
         toastr.error('Error','Oops failed to signoff the event')
     }
 }
+
+export const getUserEvent = (hostUid,option)=>
+async (dispatch,getState)=>{
+    dispatch(asyncActionStart())
+    let today = new Date()
+    today = moment(today).toISOString()
+    today = today.split('T')[0]
+    console.log(today)
+    console.log(hostUid)
+    const firestore = firebase.firestore()
+    const eventsRef = firestore.collection('events')
+    let k = eventsRef.get()
+    console.log(k)
+    k = k.docs
+    let query
+    switch(option){
+        case 1: // past events
+            query = eventsRef.where('hostUid','==',hostUid).where('date','<=',today).orderBy('date','desc')
+            console.log(query)
+            break
+        case 2: // future events
+            query = eventsRef.where('hostUid','==',hostUid).where('date','>=',today).orderBy('date','desc')
+            console.log(query)
+            break
+        default:
+            query = eventsRef.where('hostUid','==',hostUid)
+            console.log(query)
+            break
+
+    } 
+    console.log(query)
+    try {
+        let querySnap = await query.get()
+        let events = []
+        for(let i=0;i<querySnap.docs.length;i++){
+            let evt = {...querySnap.docs[i].data(),id:querySnap.docs[i].id}
+            events.push(evt)
+        }
+        console.log(events)
+        if(events.length > 0){
+            dispatch({type:FETCH_EVENTS,payload:{events}})
+        }
+        else{
+            return 0
+        }
+        dispatch(asyncActionFinish())
+    } catch (error) {
+        console.log(error)
+        dispatch(asyncActionError())
+    }
+}
+/*
+export const getUserEvents = (userUid, activeTab) => async (
+    dispatch,
+    getState
+  ) => {
+    dispatch(asyncActionStart());
+    const firestore = firebase.firestore();
+    const today = new Date();
+    let eventsRef = firestore.collection('event_attendee');
+    let query;
+    switch (activeTab) {
+      case 1: // past events
+        query = eventsRef
+          .where('userUid', '==', userUid)
+          .where('eventDate', '<=', today)
+          .orderBy('eventDate', 'desc');
+        break;
+      case 2: // future events
+        query = eventsRef
+          .where('userUid', '==', userUid)
+          .where('eventDate', '>=', today)
+          .orderBy('eventDate');
+        break;
+      case 3: // hosted events
+        query = eventsRef
+          .where('userUid', '==', userUid)
+          .where('host', '==', true)
+          .orderBy('eventDate', 'desc');
+        break;
+      default:
+        query = eventsRef
+          .where('userUid', '==', userUid)
+          .orderBy('eventDate', 'desc');
+        break;
+    }
+  
+    try {
+      let querySnap = await query.get();
+      let events = [];
+  
+      for (let i = 0; i < querySnap.docs.length; i++) {
+        let evt = await firestore
+          .collection('events')
+          .doc(querySnap.docs[i].data().eventId)
+          .get();
+        events.push({ ...evt.data(), id: evt.id });
+      }
+  
+      dispatch({ type: FETCH_EVENTS, payload: { events } });
+  
+      dispatch(asyncActionFinish());
+    } catch (error) {
+      console.log(error);
+      dispatch(asyncActionError());
+    }
+  };
+  */

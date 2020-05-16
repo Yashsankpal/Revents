@@ -14,9 +14,9 @@ class EventLists extends Component {
                 <Segment>
                     <Item.Group>
                         <Item>
-                            <Item.Image src={list.Profile_image} size='small' floated='left'/>
+                            <Item.Image src={list.hostedPhotoURL} size='small' floated='left'/>
                             <Item.Content>
-                            <Item.Header>{list.event}</Item.Header>
+                            <Item.Header>{list.title}</Item.Header>
                             <Item.Description> Hosted by {list.hostedBy} </Item.Description>
                             {
                                 list.cancelled &&

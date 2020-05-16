@@ -4,7 +4,7 @@ import React,{Component, Fragment} from 'react';
 import EventDashboard from '../../features/Event/EventDashboard/EventDashboard';
 import Navbar from '../../features/nav/navbar/Navbar';
 import { Container } from 'semantic-ui-react';
-import { BrowserRouter, Route } from 'react-router-dom';
+import { BrowserRouter, Route, withRouter } from 'react-router-dom';
 import homepage from '../../features/Homepage/homepage';
 import EventCreate from '../../features/Event/EventCreation/EventCreate';
 import Settingsdashboard from '../../features/Event/user/settings/Settingsdashboard';
@@ -12,6 +12,7 @@ import Userdashboard from '../../features/Event/user/userDashboard/Userdashboard
 import EventDetailed from '../../features/Event/EventDetailed/EventDetailed';
 import UserDetailedPage from '../../features/Event/user/UserDetailed';
 import TestComponent from '../../test/TestComponent';
+import NotFound from './NotFound';
 
 
 class App extends Component {
@@ -33,6 +34,7 @@ class App extends Component {
             <Route path='/settings' component={Settingsdashboard}/>
             <Route path='/test' component={TestComponent}/>
             <Route path='/detailpage/:id' component={EventDetailed}/>
+            <Route component={NotFound}/>
           </Container>
           </Fragment>
       )}/>
@@ -41,5 +43,5 @@ class App extends Component {
 }
 }
 
-export default App;
+export default withRouter(App);
 /* jshint ignore:end */

@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { Form, Button, Segment, Label, Divider } from 'semantic-ui-react'
 import TextInput from '../../app/common/TextInput'
 import { combineValidators, isRequired, composeValidators, hasLengthGreaterThan, hasLengthBetween } from 'revalidate'
-import { registerUser } from '../../auth/authActions'
+import { registerUser , socialSignup } from '../../auth/authActions'
 import { invalid } from 'moment'
 import { SocialLogin } from '../Event/acounts/SocialLogin'
 
@@ -17,10 +17,11 @@ const validate = combineValidators({
 })
 
 const actions = {
-    registerUser
+    registerUser,
+    socialSignup
 }
 
-const RegisterForm= ({error ,handleSubmit,registerUser,invalid,submitting,pristine})=> {
+const RegisterForm= ({error ,handleSubmit,registerUser,invalid,submitting,pristine,socialSignup})=> {
     return (
       <Form onSubmit={handleSubmit(registerUser)}>
           <Segment>
@@ -47,7 +48,7 @@ const RegisterForm= ({error ,handleSubmit,registerUser,invalid,submitting,pristi
               Register
             </Button>
             <Divider content='OR' horizontal />
-            <SocialLogin/>
+            <SocialLogin socialSignup={socialSignup} name='SignUp'/>
           </Segment>
         </Form>
     );

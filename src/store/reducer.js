@@ -1,4 +1,4 @@
-import { CREATE_EVENT, UPDATE_EVENT, DELETE_EVENT } from "./constant"
+import { CREATE_EVENT, UPDATE_EVENT, DELETE_EVENT, FETCH_EVENTS } from "./constant"
 
 const events= [
   {       
@@ -61,6 +61,8 @@ export const reducer = (state = events , payload) => {
       return [...state.filter(event=>event.id !== payload.payload.event.id),payload.payload.event]
     case DELETE_EVENT:
       return [...state.filter(event=>event.id !== payload.payload.event.id)]
+    case FETCH_EVENTS:
+        return payload.payload.events
     default:
             return state
     } 

@@ -17,6 +17,7 @@ import TestPlacesInput from '../../../app/common/TestPlacesInput';
 import { geocodeByAddress, getLatLng } from 'react-places-autocomplete';
 import { toastr } from 'react-redux-toastr';
 import { withFirestore } from 'react-redux-firebase';
+import TimeInput from '../../../app/common/TimeInput';
 
 
 const mapsStatetoProps = (state,ownProps) => {
@@ -26,7 +27,7 @@ const mapsStatetoProps = (state,ownProps) => {
     if (state.firestore.ordered.events && state.firestore.ordered.events[0]) {
         event = state.firestore.ordered.events.find(event => ownProps.match.params.id === event.id)||{}
     }
-  
+
     return {
       initialValues: event,
       event,
@@ -135,7 +136,7 @@ class EventCreate extends Component {
                 <Field
                 type='text'
                 component={TextInput} 
-                name='event' 
+                name='title' 
                 placeholder='Enter the title'
                 />
 
@@ -162,6 +163,7 @@ class EventCreate extends Component {
                 component={TestPlacesInput} 
                 placeholder='Event City' 
                 name='city'
+                type='text'
                 options={{types:['cities']}}
                 onSelect={this.handleCitySelect}
                 />
@@ -170,6 +172,7 @@ class EventCreate extends Component {
                 placeholder='Event Venue' 
                 component={TestPlacesInput} 
                 name='Venue'
+                type='text'
                 options={{
                     Location: new google.maps.LatLng(this.state.cityLatLng),
                     radius:1000,
@@ -177,7 +180,20 @@ class EventCreate extends Component {
                 }}
                 onSelect={this.handleVenueSelect} 
                 />
-
+                <Form.Group inline>
+                <Field 
+                name='date' 
+                type='date'
+                component={DateArea} 
+                label='Enter Date'
+                />
+                <Field
+                name='time'
+                type='time'
+                component={TimeInput}
+                label='Enter Time'
+                />
+                </Form.Group>
                 <Form.Group>
                     <Form.Button primary disabled={invalid || submitting || pristine} type='submit'>Submit</Form.Button>
                     <Form.Button  
@@ -198,14 +214,6 @@ if(eventId && event.length > 0 ){
     console.log(event);
     
 }
-<Field 
-name='date' 
-component={DateArea} 
-placeholder='Event Date' 
-dateFormat='dd LLL yyyy h:mm a' 
-showTimeSelect 
-timeFormat='HH:mm'
-/>
 formChangehandler=({target:{name,value}})=>{
     this.setState({
         [name] : value

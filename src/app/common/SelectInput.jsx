@@ -6,7 +6,7 @@ const SelectInput = ({input, type, placeholder, multiple, options, meta: {touche
     return (
     <Form.Field error={touched && !!error} >
       <Select
-        value={input.value || null}
+        value={input.value}
         onChange={(e, data) => input.onChange(data.value)}
         placeholder={placeholder}
         options={options}

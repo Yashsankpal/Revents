@@ -35,7 +35,7 @@ const LoginForm = ({login,handleSubmit,error,invalid,submitting,pristine,socialL
             {error && <Label basic color='red'>{error}</Label>}
             <Button fluid color='teal' disabled={invalid || submitting || pristine}>Login</Button>
             <Divider content='OR' horizontal />
-            <SocialLogin socialLogin={socialLogin}/>
+            <SocialLogin socialLogin={socialLogin} name= 'login' />
             </Segment>
         </Form>    
     )
