@@ -4,7 +4,7 @@ const initialState = {
     event:42
   }
 
-export const reducer = (state = initialState,action) => {
+export const reducer = (state = initialState,action) =>  {
   switch(action.type){
     case INCREMENT:
       return {...state, event:state.event+1}

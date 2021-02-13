@@ -10,9 +10,9 @@ import { configure } from './store/configure';
 import { createDevTools } from 'redux-devtools'
 import ReduxToastr from 'react-redux-toastr';
 import 'react-redux-toastr/lib/css/react-redux-toastr.min.css'
-const store=configure()
 
 const root = document.getElementById('root');
+const store=configure()
 
 let render=()=>{
     ReactDOM.render(<Provider store={store}>

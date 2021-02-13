@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+ import React, { Component } from 'react'
 import { Form, Button } from 'semantic-ui-react'
 import { Field, reduxForm, reset } from 'redux-form'
 import TextArea from '../../../app/common/TextArea'

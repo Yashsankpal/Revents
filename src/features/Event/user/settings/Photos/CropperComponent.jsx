@@ -7,6 +7,7 @@ class CropperPage extends Component {
   cropper = createRef();
 
   cropImage = () => {
+	console.log(this.cropper)
     const {setImage} = this.props
     if (typeof this.cropper.current.getCroppedCanvas() === 'undefined'){
       return

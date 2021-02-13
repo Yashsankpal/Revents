@@ -1,7 +1,10 @@
 import { MODAL_OPEN , MODAL_CLOSE } from './modalConstants'
 
 
-const initialState = null
+const initialState = {
+    modalname:null,
+    status:null
+}
 
 export const reducer = (state = initialState,payload) => {
     switch(payload.type){

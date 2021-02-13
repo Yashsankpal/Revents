@@ -53,7 +53,7 @@ export class Place extends React.Component {
                       style,
                     })}
                   >
-                    <span>{suggestion.description}</span>
+                     <span>{suggestion.description}</span>
                   </div>
                 );
               })}
